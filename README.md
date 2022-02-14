@@ -18,7 +18,7 @@ a JSON with the following structure:
       "romtype": "nightly",
       "size": 314572800,
       "url": "https://example.com/ota-package.zip",
-      "version": "15.1"
+      "version": "3.0"
     }
   ]
 }
