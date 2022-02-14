@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.lineageos.updater;
+package com.libremobileos.updater;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -28,16 +28,16 @@ import android.os.SystemProperties;
 import androidx.core.app.NotificationCompat;
 import androidx.preference.PreferenceManager;
 
-import org.lineageos.updater.misc.BuildInfoUtils;
-import org.lineageos.updater.misc.Constants;
-import org.lineageos.updater.misc.StringGenerator;
+import com.libremobileos.updater.misc.BuildInfoUtils;
+import com.libremobileos.updater.misc.Constants;
+import com.libremobileos.updater.misc.StringGenerator;
 
 import java.text.DateFormat;
 
 public class UpdaterReceiver extends BroadcastReceiver {
 
     public static final String ACTION_INSTALL_REBOOT =
-            "org.lineageos.updater.action.INSTALL_REBOOT";
+            "com.libremobileos.updater.action.INSTALL_REBOOT";
 
     private static final String INSTALL_ERROR_NOTIFICATION_CHANNEL =
             "install_error_notification_channel";

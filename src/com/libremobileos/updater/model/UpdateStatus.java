@@ -13,28 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.lineageos.updater.model;
+package com.libremobileos.updater.model;
 
-import java.io.File;
+public enum UpdateStatus {
+    UNKNOWN,
+    STARTING,
+    DOWNLOADING,
+    PAUSED,
+    PAUSED_ERROR,
+    DELETED,
+    VERIFYING,
+    VERIFIED,
+    VERIFICATION_FAILED,
+    INSTALLING,
+    INSTALLED,
+    INSTALLATION_FAILED,
+    INSTALLATION_CANCELLED,
+    INSTALLATION_SUSPENDED;
 
-public interface UpdateInfo extends UpdateBaseInfo {
-    UpdateStatus getStatus();
-
-    int getPersistentStatus();
-
-    File getFile();
-
-    long getFileSize();
-
-    int getProgress();
-
-    long getEta();
-
-    long getSpeed();
-
-    int getInstallProgress();
-
-    boolean getAvailableOnline();
-
-    boolean getFinalizing();
+    public static final class Persistent {
+        public static final int UNKNOWN = 0;
+        public static final int INCOMPLETE = 1;
+        public static final int VERIFIED = 2;
+    }
 }

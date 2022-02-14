@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.lineageos.updater.controller;
+package com.libremobileos.updater.controller;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -24,10 +24,10 @@ import android.util.Log;
 
 import androidx.preference.PreferenceManager;
 
-import org.lineageos.updater.misc.Constants;
-import org.lineageos.updater.misc.Utils;
-import org.lineageos.updater.model.Update;
-import org.lineageos.updater.model.UpdateStatus;
+import com.libremobileos.updater.misc.Constants;
+import com.libremobileos.updater.misc.Utils;
+import com.libremobileos.updater.model.Update;
+import com.libremobileos.updater.model.UpdateStatus;
 
 import java.io.BufferedReader;
 import java.io.File;

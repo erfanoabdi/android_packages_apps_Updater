@@ -13,20 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.lineageos.updater.model;
+package com.libremobileos.updater.model;
 
-public interface UpdateBaseInfo {
-    String getName();
+import java.io.File;
 
-    String getDownloadId();
+public interface UpdateInfo extends UpdateBaseInfo {
+    UpdateStatus getStatus();
 
-    long getTimestamp();
+    int getPersistentStatus();
 
-    String getType();
-
-    String getVersion();
-
-    String getDownloadUrl();
+    File getFile();
 
     long getFileSize();
+
+    int getProgress();
+
+    long getEta();
+
+    long getSpeed();
+
+    int getInstallProgress();
+
+    boolean getAvailableOnline();
+
+    boolean getFinalizing();
 }

@@ -13,20 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.lineageos.updater.misc;
+package com.libremobileos.updater.model;
 
-import android.os.SystemProperties;
+public interface UpdateBaseInfo {
+    String getName();
 
-public final class BuildInfoUtils {
+    String getDownloadId();
 
-    private BuildInfoUtils() {
-    }
+    long getTimestamp();
 
-    public static long getBuildDateTimestamp() {
-        return SystemProperties.getLong(Constants.PROP_BUILD_DATE, 0);
-    }
+    String getType();
 
-    public static String getBuildVersion() {
-        return SystemProperties.get(Constants.PROP_BUILD_VERSION);
-    }
+    String getVersion();
+
+    String getDownloadUrl();
+
+    long getFileSize();
 }

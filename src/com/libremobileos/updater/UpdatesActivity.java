@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.lineageos.updater;
+package com.libremobileos.updater;
 
 import android.annotation.SuppressLint;
 import android.app.UiModeManager;
@@ -59,14 +59,14 @@ import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.android.material.snackbar.Snackbar;
 
 import org.json.JSONException;
-import org.lineageos.updater.controller.UpdaterController;
-import org.lineageos.updater.controller.UpdaterService;
-import org.lineageos.updater.download.DownloadClient;
-import org.lineageos.updater.misc.BuildInfoUtils;
-import org.lineageos.updater.misc.Constants;
-import org.lineageos.updater.misc.StringGenerator;
-import org.lineageos.updater.misc.Utils;
-import org.lineageos.updater.model.UpdateInfo;
+import com.libremobileos.updater.controller.UpdaterController;
+import com.libremobileos.updater.controller.UpdaterService;
+import com.libremobileos.updater.download.DownloadClient;
+import com.libremobileos.updater.misc.BuildInfoUtils;
+import com.libremobileos.updater.misc.Constants;
+import com.libremobileos.updater.misc.StringGenerator;
+import com.libremobileos.updater.misc.Utils;
+import com.libremobileos.updater.model.UpdateInfo;
 
 import java.io.File;
 import java.io.IOException;
