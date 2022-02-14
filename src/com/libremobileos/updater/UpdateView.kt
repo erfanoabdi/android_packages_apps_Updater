@@ -84,6 +84,8 @@ class UpdateView : LinearLayout {
     private var chipDateTarget: Chip
     private var update: UpdateInfo? = null
     private var noUpdates: View
+    private var notesTitle: View
+    private var notesSummary: View
     private var moreChangelog: Button
     private var updateContainer: View
 
@@ -98,6 +100,8 @@ class UpdateView : LinearLayout {
     init {
         inflate(context, R.layout.update_layout, this)
         noUpdates = findViewById(R.id.no_updates)
+        notesTitle = findViewById(R.id.notesTitle)
+        notesSummary = findViewById(R.id.notesSummary)
         chipHeader = findViewById(R.id.updateChipHeader)
         chipDateCurrent = findViewById(R.id.chipDateCurrent)
         chipDateTarget = findViewById(R.id.chipDateTarget)
@@ -107,6 +111,8 @@ class UpdateView : LinearLayout {
 
     fun noUpdates() {
         noUpdates.visibility = VISIBLE
+        notesTitle.visibility = GONE
+        notesSummary.visibility = GONE
     }
 
     fun unleashTheBunny(resID: Int) {
@@ -118,6 +124,8 @@ class UpdateView : LinearLayout {
         if (mDownloadId == null) {
             actionCheck.visibility = VISIBLE
             noUpdates.visibility = VISIBLE
+            notesTitle.visibility = GONE
+            notesSummary.visibility = GONE
             return
         }
         update = mUpdaterController!!.getUpdate(mDownloadId)
@@ -128,6 +136,8 @@ class UpdateView : LinearLayout {
             return
         }
         noUpdates.visibility = GONE
+        notesTitle.visibility = VISIBLE
+        notesSummary.visibility = VISIBLE
         val activeLayout: Boolean = when (update!!.persistentStatus) {
             UpdateStatus.Persistent.UNKNOWN -> update!!.status == UpdateStatus.STARTING
             UpdateStatus.Persistent.VERIFIED -> update!!.status == UpdateStatus.INSTALLING
