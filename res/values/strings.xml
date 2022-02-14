@@ -157,4 +157,12 @@
     <string name="info_dialog_title">Did you know?</string>
     <string name="info_dialog_message">LMODroid updates are full installation packages. That means you can always install only the latest update, even if you skipped some in between!</string>
     <string name="info_dialog_ok">Thanks for the info!</string>
+    <string name="maybe_later">Maybe later</string>
+    <string name="bunny">You\'re never get bored?</string>
+    <string name="nothing">Nothing yet..</string>
+    <string name="hit">You got a hit.</string>
+    <string name="check_for_updates">Check for updates</string>
+    <string name="about_this_update">About this update</string>
+    <string name="notes">Notes</string>
+    <string name="update_notes">∘ Keep your phone connected to a network throughout the update.\n∘ Make sure your device has at least 30% battery.\n∘ Do not use your phone or device until the update is complete.</string>
 </resources>
