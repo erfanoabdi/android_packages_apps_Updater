@@ -190,15 +190,20 @@ class UpdateView : LinearLayout {
         }
         actionResume.setOnClickListener {
             val update = mUpdaterController!!.getUpdate(mDownloadId)
-            val canInstall = Utils.canInstall(update) ||
-                    update.file.length() == update.fileSize
-            if (canInstall) {
+            val canInstall = Utils.canInstall(update)
+            val downloaded = update.file.length() == update.fileSize
+            if (downloaded) {
+                if (canInstall) {
+                    getInstallDialog(mDownloadId!!)!!.show()
+                } else {
+                    mActivity!!.showSnackbar(R.string.snack_update_not_installable,
+                        Snackbar.LENGTH_LONG
+                    )
+                }
+            } else {
                 mUpdaterController!!.resumeDownload(mDownloadId)
                 hideEverythingBut(actionProgress)
                 actionProgress.visibility = VISIBLE
-            } else {
-                mActivity!!.showSnackbar(R.string.snack_update_not_installable,
-                        Snackbar.LENGTH_LONG)
             }
         }
         actionInstallButton.setOnClickListener {
@@ -208,7 +213,7 @@ class UpdateView : LinearLayout {
                 getInstallDialog(mDownloadId!!)!!.show()
             } else {
                 mActivity!!.showSnackbar(R.string.snack_update_not_installable,
-                        Snackbar.LENGTH_LONG)
+                    Snackbar.LENGTH_LONG)
             }
         }
         actionCancel.setOnClickListener {
