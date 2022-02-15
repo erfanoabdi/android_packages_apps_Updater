@@ -110,9 +110,12 @@ class UpdateView : LinearLayout {
     }
 
     fun noUpdates() {
+        hideEverythingBut(actionCheck)
         noUpdates.visibility = VISIBLE
         notesTitle.visibility = GONE
         notesSummary.visibility = GONE
+        chipHeader.visibility = GONE
+        updateContainer.visibility = GONE
     }
 
     fun unleashTheBunny(resID: Int) {
@@ -247,6 +250,8 @@ class UpdateView : LinearLayout {
             actionProgress.visibility = View.GONE
         if (view.id != actionReboot.id)
             actionReboot.visibility = View.GONE
+        if (view.id != actionStart.id)
+            actionStart.visibility = View.GONE
     }
 
     private fun parseChangelog() {
