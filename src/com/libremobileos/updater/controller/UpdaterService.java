@@ -220,6 +220,12 @@ public class UpdaterService extends Service {
                         mUpdaterController);
                 installer.reconnect();
                 installer.cancel();
+            } else if (ABUpdateInstaller.isInstallingUpdateSuspended(this)) {
+                String downloadId = intent.getStringExtra(EXTRA_DOWNLOAD_ID);
+                ABUpdateInstaller installer = ABUpdateInstaller.getInstance(this,
+                        mUpdaterController);
+                installer.reconnect();
+                installer.cancel();
             }
         } else if (ACTION_INSTALL_SUSPEND.equals(intent.getAction())) {
             if (ABUpdateInstaller.isInstallingUpdate(this)) {
@@ -431,6 +437,8 @@ public class UpdaterService extends Service {
             }
             case INSTALLATION_CANCELLED: {
                 stopForeground(true);
+                mNotificationBuilder.setOngoing(false);
+                mNotificationManager.cancel(NOTIFICATION_ID);
                 tryStopSelf();
                 break;
             }

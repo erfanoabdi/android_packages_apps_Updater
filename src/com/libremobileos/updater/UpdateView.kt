@@ -189,9 +189,24 @@ class UpdateView : LinearLayout {
     private fun initListeners() {
         actionProgressPause.setOnClickListener {
             if (!actionProgressBar.isIndeterminate) {
-                mUpdaterController!!.pauseDownload(mDownloadId)
-                hideEverythingBut(actionOptions)
-                actionOptions.visibility = VISIBLE
+                val update = mUpdaterController!!.getUpdate(mDownloadId)
+                val notAB = !mUpdaterController!!.isInstallingABUpdate
+                val downloaded = update.file.length() == update.fileSize
+                if (downloaded) {
+                    if (notAB) {
+                        cancelInstallationDialog.show()
+                    } else {
+                        val intent = Intent(mActivity, UpdaterService::class.java)
+                        intent.action = UpdaterService.ACTION_INSTALL_SUSPEND
+                        mActivity!!.startService(intent)
+                        hideEverythingBut(actionOptions)
+                        actionOptions.visibility = VISIBLE
+                    }
+                } else {
+                    mUpdaterController!!.pauseDownload(mDownloadId)
+                    hideEverythingBut(actionOptions)
+                    actionOptions.visibility = VISIBLE
+                }
             }
         }
         actionStartButton.setOnClickListener {
@@ -203,15 +218,15 @@ class UpdateView : LinearLayout {
         }
         actionResume.setOnClickListener {
             val update = mUpdaterController!!.getUpdate(mDownloadId)
-            val canInstall = Utils.canInstall(update)
             val downloaded = update.file.length() == update.fileSize
+            val isAB = mUpdaterController!!.isInstallingABUpdate
             if (downloaded) {
-                if (canInstall) {
-                    getInstallDialog(mDownloadId!!)!!.show()
-                } else {
-                    mActivity!!.showSnackbar(R.string.snack_update_not_installable,
-                        Snackbar.LENGTH_LONG
-                    )
+                if (isAB) {
+                    val intent = Intent(mActivity, UpdaterService::class.java)
+                    intent.action = UpdaterService.ACTION_INSTALL_RESUME
+                    mActivity!!.startService(intent)
+                    hideEverythingBut(actionProgress)
+                    actionProgress.visibility = VISIBLE
                 }
             } else {
                 mUpdaterController!!.resumeDownload(mDownloadId)
@@ -230,8 +245,13 @@ class UpdateView : LinearLayout {
             }
         }
         actionCancel.setOnClickListener {
-            getDeleteDialog(mDownloadId!!).show()
-            //cancelInstallationDialog.show()
+            val update = mUpdaterController!!.getUpdate(mDownloadId)
+            val downloaded = update.file.length() == update.fileSize
+            if (downloaded) {
+                cancelInstallationDialog.show()
+            } else {
+                getDeleteDialog(mDownloadId!!).show()
+            }
         }
         actionRebootButton.setOnClickListener {
             val pm = mActivity!!.getSystemService(Context.POWER_SERVICE) as PowerManager
@@ -317,12 +337,11 @@ class UpdateView : LinearLayout {
             }
             mUpdaterController!!.isInstallingUpdate(downloadId) -> {
                 actionProgress.visibility = VISIBLE
-                setButtonAction(actionCancel, Action.CANCEL_INSTALLATION, true)
+                setButtonAction(actionProgressPause, Action.PAUSE, true)
                 val notAB = !mUpdaterController!!.isInstallingABUpdate
                 actionProgressStats.setText(if (notAB) R.string.dialog_prepare_zip_message else if (update.finalizing) R.string.finalizing_package else R.string.preparing_ota_first_boot)
                 actionProgressBar.isIndeterminate = false
                 actionProgressBar.progress = update.installProgress
-                actionProgressPause.isEnabled = false
             }
             mUpdaterController!!.isVerifyingUpdate(downloadId) -> {
                 actionProgress.visibility = VISIBLE
@@ -353,7 +372,11 @@ class UpdateView : LinearLayout {
 
     private fun handleNotActiveStatus(update: UpdateInfo) {
         val downloadId = update.downloadId
-        if (mUpdaterController!!.isWaitingForReboot(downloadId)) {
+        if (mUpdaterController!!.isWaitingForResume) {
+            onLongClickListener = getLongClickListener(update, false, this)
+            setButtonAction(actionResume, Action.RESUME, true)
+            return
+        } else if (mUpdaterController!!.isWaitingForReboot(downloadId)) {
             onLongClickListener = getLongClickListener(update, false, this)
             setButtonAction(actionRebootButton, Action.REBOOT, true)
         } else if (update.persistentStatus == UpdateStatus.Persistent.VERIFIED) {
@@ -497,7 +520,11 @@ class UpdateView : LinearLayout {
                 .setMessage(mActivity!!.getString(resId, buildInfoText,
                         mActivity!!.getString(android.R.string.ok)))
                 .setPositiveButton(android.R.string.ok
-                ) { _: DialogInterface?, _: Int -> Utils.triggerUpdate(mActivity, downloadId) }
+                ) { _: DialogInterface?, _: Int ->
+                    hideEverythingBut(actionProgress)
+                    actionProgress.visibility = VISIBLE
+                    Utils.triggerUpdate(mActivity, downloadId)
+                }
                 .setNegativeButton(android.R.string.cancel, null)
     }
 
@@ -508,7 +535,10 @@ class UpdateView : LinearLayout {
                 ) { dialog: DialogInterface?, which: Int ->
                     val intent = Intent(mActivity, UpdaterService::class.java)
                     intent.action = UpdaterService.ACTION_INSTALL_STOP
+                    intent.putExtra(UpdaterService.EXTRA_DOWNLOAD_ID, mDownloadId);
                     mActivity!!.startService(intent)
+                    hideEverythingBut(actionInstall)
+                    actionInstall.visibility = VISIBLE
                 }
                 .setNegativeButton(android.R.string.cancel, null)
 

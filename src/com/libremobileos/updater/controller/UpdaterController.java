@@ -546,6 +546,10 @@ public class UpdaterController {
         return ABUpdateInstaller.isWaitingForReboot(mContext, downloadId);
     }
 
+    public boolean isWaitingForResume() {
+        return ABUpdateInstaller.isInstallingUpdateSuspended(mContext);
+    }
+
     public void setPerformanceMode(boolean enable) {
         if (!Utils.isABDevice()) {
             return;
