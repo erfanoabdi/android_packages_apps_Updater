@@ -90,9 +90,10 @@ public class UpdatesActivity extends UpdatesListActivity {
         RelativeLayout updateProgress = findViewById(R.id.updateProgressLayout);
         RelativeLayout actionInstall = findViewById(R.id.actionInstall);
         RelativeLayout actionReboot = findViewById(R.id.actionReboot);
+        RelativeLayout actionDelete = findViewById(R.id.actionDelete);
 
         updateView = findViewById(R.id.updateView);
-        updateView.setupControlViews(actionCheck, actionStart, updateProgress, actionOptions, actionInstall, actionReboot);
+        updateView.setupControlViews(actionCheck, actionStart, updateProgress, actionOptions, actionInstall, actionReboot, actionDelete);
         updateView.setActivity(this);
 
         mBroadcastReceiver = new BroadcastReceiver() {

@@ -79,6 +79,8 @@ class UpdateView : LinearLayout {
     private lateinit var actionInstallButton: RelativeLayout
     private lateinit var actionReboot: RelativeLayout
     private lateinit var actionRebootButton: RelativeLayout
+    private lateinit var actionDelete: RelativeLayout
+    private lateinit var actionDeleteButton: RelativeLayout
     private var chipHeader: View
     private var chipDateCurrent: Chip
     private var chipDateTarget: Chip
@@ -167,7 +169,7 @@ class UpdateView : LinearLayout {
         return SimpleDateFormat("d MMM yy", Locale.getDefault()).format(Timestamp(timestamp).time * 1000L)
     }
 
-    fun setupControlViews(actionCheck: RelativeLayout, actionStart: RelativeLayout, actionProgress: RelativeLayout, actionOptions: LinearLayout, actionInstall: RelativeLayout, actionReboot: RelativeLayout) {
+    fun setupControlViews(actionCheck: RelativeLayout, actionStart: RelativeLayout, actionProgress: RelativeLayout, actionOptions: LinearLayout, actionInstall: RelativeLayout, actionReboot: RelativeLayout, actionDelete: RelativeLayout) {
         this.actionCheck = actionCheck
         this.actionCheckButton = actionCheck.findViewById(R.id.actionCheckButton)
         this.actionStart = actionStart
@@ -184,6 +186,8 @@ class UpdateView : LinearLayout {
         this.actionInstallButton = actionInstall.findViewById(R.id.actionInstallButton)
         this.actionReboot = actionReboot
         this.actionRebootButton = actionReboot.findViewById(R.id.actionRebootButton)
+        this.actionDelete = actionDelete
+        this.actionDeleteButton = actionDelete.findViewById(R.id.actionDeleteButton)
     }
 
     private fun initListeners() {
@@ -257,6 +261,9 @@ class UpdateView : LinearLayout {
             val pm = mActivity!!.getSystemService(Context.POWER_SERVICE) as PowerManager
             pm.reboot(null)
         }
+        actionDeleteButton.setOnClickListener {
+            getDeleteDialog(mDownloadId!!).show()
+        }
     }
 
     private fun hideEverythingBut(view: View) {
@@ -272,6 +279,8 @@ class UpdateView : LinearLayout {
             actionReboot.visibility = View.GONE
         if (view.id != actionStart.id)
             actionStart.visibility = View.GONE
+        if (view.id != actionDelete.id)
+            actionDelete.visibility = View.GONE
     }
 
     private fun parseChangelog() {
@@ -375,24 +384,33 @@ class UpdateView : LinearLayout {
         if (mUpdaterController!!.isWaitingForResume) {
             onLongClickListener = getLongClickListener(update, false, this)
             setButtonAction(actionResume, Action.RESUME, true)
-            return
         } else if (mUpdaterController!!.isWaitingForReboot(downloadId)) {
             onLongClickListener = getLongClickListener(update, false, this)
             setButtonAction(actionRebootButton, Action.REBOOT, true)
+            hideEverythingBut(actionReboot)
+            actionReboot.visibility = VISIBLE
         } else if (update.persistentStatus == UpdateStatus.Persistent.VERIFIED) {
             onLongClickListener = getLongClickListener(update, true, this)
-            setButtonAction(actionInstallButton, if (Utils.canInstall(update)) Action.INSTALL else Action.DELETE, !isBusy)
+            if (Utils.canInstall(update)) {
+                setButtonAction(actionInstallButton, Action.INSTALL, !isBusy)
+                hideEverythingBut(actionInstall)
+                actionInstall.visibility = VISIBLE
+            } else {
+                setButtonAction(actionDeleteButton, Action.DELETE, !isBusy)
+                hideEverythingBut(actionDelete)
+                actionDelete.visibility = VISIBLE
+            }
         } else if (!Utils.canInstall(update)) {
             onLongClickListener = getLongClickListener(update, false, this)
-            //setButtonAction(Action.INFO, downloadId, !isBusy)
+            setButtonAction(actionInstallButton, Action.INFO, !isBusy)
+            hideEverythingBut(actionInstall)
+            actionInstall.visibility = VISIBLE
         } else {
             onLongClickListener = getLongClickListener(update, false, this)
             setButtonAction(actionStartButton, Action.DOWNLOAD, !isBusy)
+            hideEverythingBut(actionStart)
+            actionStart.visibility = VISIBLE
         }
-        val fileSize = Formatter.formatShortFileSize(mActivity, update.fileSize)
-        //mBuildSize.text = fileSize
-        actionProgress.visibility = GONE
-        actionStart.visibility = VISIBLE
     }
 
     private fun startDownloadWithWarning(downloadId: String) {
