@@ -375,22 +375,22 @@ class UpdateView : LinearLayout {
                 actionProgressBar.progress = update.progress
             }
         }
-        getLongClickListener(update, canDelete, this)
+        onLongClickListener = getLongClickListener(update, canDelete, this)
         actionStart.visibility = GONE
     }
 
     private fun handleNotActiveStatus(update: UpdateInfo) {
         val downloadId = update.downloadId
         if (mUpdaterController!!.isWaitingForResume) {
-            getLongClickListener(update, false, this)
+            onLongClickListener = getLongClickListener(update, false, this)
             setButtonAction(actionResume, Action.RESUME, true)
         } else if (mUpdaterController!!.isWaitingForReboot(downloadId)) {
-            getLongClickListener(update, false, this)
+            onLongClickListener = getLongClickListener(update, false, this)
             setButtonAction(actionRebootButton, Action.REBOOT, true)
             hideEverythingBut(actionReboot)
             actionReboot.visibility = VISIBLE
         } else if (update.persistentStatus == UpdateStatus.Persistent.VERIFIED) {
-            getLongClickListener(update, true, this)
+            onLongClickListener = getLongClickListener(update, true, this)
             if (Utils.canInstall(update)) {
                 setButtonAction(actionInstallButton, Action.INSTALL, !isBusy)
                 hideEverythingBut(actionInstall)
@@ -401,12 +401,12 @@ class UpdateView : LinearLayout {
                 actionDelete.visibility = VISIBLE
             }
         } else if (!Utils.canInstall(update)) {
-            getLongClickListener(update, false, this)
+            onLongClickListener = getLongClickListener(update, false, this)
             setButtonAction(actionInstallButton, Action.INFO, !isBusy)
             hideEverythingBut(actionInstall)
             actionInstall.visibility = VISIBLE
         } else {
-            getLongClickListener(update, false, this)
+            onLongClickListener = getLongClickListener(update, false, this)
             setButtonAction(actionStartButton, Action.DOWNLOAD, !isBusy)
             hideEverythingBut(actionStart)
             actionStart.visibility = VISIBLE
